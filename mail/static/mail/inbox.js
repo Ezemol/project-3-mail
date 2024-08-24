@@ -8,7 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // By default, load the inbox
   load_mailbox('inbox');
-});
+  
+
+
+
 
 function compose_email() {
 
@@ -30,4 +33,42 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  // Correr función para mostrar emails de esta página
+  get_emails(mailbox);
 }
+
+
+// conseguir emails en una página
+// Mandar GET y recibir emails en X mailbox
+function get_emails(mailbox) {
+  fetch(`/emails/${mailbox}`) 
+  .then(response => response.json())
+  .then(emails => {
+    // print emails
+    console.log(emails);
+    
+    // Agregar cada email a la página
+    emails.forEach(email => {
+      // Crear div para cada email
+      const newDiv = document.createElement('div');
+      newDiv.className = 'email-item';
+
+      // Agregar cada email nuevo
+      newDiv.innerHTML = `
+      <p><strong>From:</strong> ${email.sender}</p> 
+      <p><strong>To:</strong> ${email.recipients.join(', ')}</p>   
+      <p><strong>Subject:</strong> ${email.subject}</p> 
+      <p><strong>Body:</strong> ${email.body}</p> 
+      <p><strong>Date:</strong> ${email.timestamp}</p> 
+      `; // .join(", ") sirve por si hay varios destinatarios, que aparezcan separados por una coma
+
+      document.querySelector('#emails-view').appendChild(newDiv);
+    });
+  })
+  .catch(error => {
+    // Manejo de errores
+    console.error('Invalid mailbox.', error);
+  }); 
+}
+});
