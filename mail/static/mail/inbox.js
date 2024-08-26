@@ -11,8 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
 
 
-
-
 function compose_email() {
 
   // Show compose view and hide other views
@@ -80,20 +78,18 @@ function get_emails(mailbox) {
       <p><strong>Body:</strong> ${email.body}</p> 
       <p><strong>Date:</strong> ${email.timestamp}</p>
       <p><button id='email-button-${email.id}'>Go to Email</button></p>
-      <div id="archived-read"></div>
       `; // .join(", ") sirve por si hay varios destinatarios, que aparezcan separados por una coma
 
       // Agregar div con email
       document.querySelector('#emails-view').appendChild(newDiv);
 
+      // Agregar background color a gris para los emails leídos
+      if (email.read === true) {
+        document.querySelector(`#email-item-${email.id}`).style.backgroundColor = 'grey';
+      }
       // Correr función para seleccionar un email con id específico.
-    document.querySelector(`#email-button-${email.id}`).addEventListener('click', () => get_email(`${email.id}`));
+    document.querySelector(`#email-button-${email.id}`).addEventListener('click', () => get_email(email.id));
     });
-
-    
-
- 
-
   })
   .catch(error => {
     // Manejo de errores
@@ -111,26 +107,31 @@ function get_email(email_id) {
     console.log(email);
 
     // Mostrar este email en pantalla
-    document.querySelector('#emails-view').style.display = 'none';
-    document.querySelector(`#email-item-${email_id}`).style.display = 'block';
+    document.querySelector('#emails-view').innerHTML = '';
+    
+    const emailView = document.createElement('div'); // Crear div para alojar email
+    emailView.className = 'email-detail';
 
-    // Agregar botones de archivado y leido
-    document.querySelector('#archived-read').innerHTML = `
-    <button id="button-archived">Archived</button>
-    <button id="button-read">Read</button>
-    ` 
-    // Cambiar email específico a archivado/desarchivado y leido/no leido
+    emailView.innerHTML = `
+      <p><strong>From:</strong> ${email.sender}</p> 
+      <p><strong>To:</strong> ${email.recipients.join(', ')}</p>   
+      <p><strong>Subject:</strong> ${email.subject}</p> 
+      <p><strong>Date:</strong> ${email.timestamp}</p>
+      <hr>
+      <p><strong>Body:</strong> ${email.body}</p> 
+      <hr>
+      <button id="button-archived">${email.archived ? "Unarchive" : "Archive"}</button>
+      <button id="button-read">${email.read ? "Mark as Unread" : "Mark as Read"}</button>
+    `
+    document.querySelector('#emails-view').appendChild(emailView);
+
     document.querySelector('#button-archived').addEventListener('click', () => {
-      if (email.archived === true && email.read === true) {
-        put_email(email.id, false, false)
-      } else if (email.archived === true && email.read === false) {
-        put_email(email.id, false, true)
-      } else if (email.archived === false && email.read === true) {
-        put_email(email.id, true, false)
-      } else {
-        put_email(email.id, false, true)
-      }
-    })
+      put_email(email.id, !email.archived, email.read);
+    });
+
+    document.querySelector('#button-read').addEventListener('click', () => {
+      put_email(email.id, email.archived, !email.read);
+    });
   })
   .catch(error => {
     // Manejo de errores
@@ -139,7 +140,6 @@ function get_email(email_id) {
 }
 
 // Function para mandar email
-// TODO
 function send_email(recipients, subject, body) {
   fetch('/emails', {
     method: 'POST',
@@ -153,6 +153,9 @@ function send_email(recipients, subject, body) {
   .then(result => {
     // Print result
     console.log(result);
+
+    // Mandar al usuario de vuelta a la página principal
+    load_mailbox('inbox');
   })
   .catch(error => {
     console.error('At least one recipient required.', error);
