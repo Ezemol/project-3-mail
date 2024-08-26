@@ -19,13 +19,25 @@ function compose_email() {
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
-  // Clear out composition fields
+  // Clear out composition fields 
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 
   // TODO logica de envío
-  send_email()
+  const form = document.querySelector('#compose-form'); // variable de form
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevenir que la página se recargue
+
+    // Declarar variables del form
+    const recipients = document.querySelector('#compose-recipients').value;
+    const subject = document.querySelector('#compose-subject').value;
+    const body = document.querySelector('#compose-body').value;
+
+    send_email(recipients, subject, body);
+  });
+
 
 }
 
@@ -68,6 +80,7 @@ function get_emails(mailbox) {
       <p><strong>Body:</strong> ${email.body}</p> 
       <p><strong>Date:</strong> ${email.timestamp}</p>
       <p><button id='email-button-${email.id}'>Go to Email</button></p>
+      <div id="archived-read"></div>
       `; // .join(", ") sirve por si hay varios destinatarios, que aparezcan separados por una coma
 
       // Agregar div con email
@@ -76,6 +89,9 @@ function get_emails(mailbox) {
 
     // Correr función para seleccionar un email con id específico.
     document.querySelector(`#email-button-${email.id}`).addEventListener('click', () => get_email(`${email.id}`));
+
+ 
+
   })
   .catch(error => {
     // Manejo de errores
@@ -96,6 +112,22 @@ function get_email(email_id) {
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector(`#email-item-${email_id}`).style.display = 'block';
 
+    // Agregar botones de archivado y leido
+    document.querySelector('#archived-read').innerHTML = `
+    <button id="button-archived">Archived</button>
+    <button id="button-read">Read</button>
+    ` 
+    document.querySelector('#button-archived').addEventListener('click', () => {
+      if (email.archived === true && email.read === true) {
+        put_email(email.id, false, false)
+      } else if (email.archived === true && email.read === false) {
+        put_email(email.id, false, true)
+      } else if (email.archived === false && email.read === true) {
+        put_email(email.id, true, false)
+      } else {
+        put_email(email.id, false, true)
+      }
+    })
   })
   .catch(error => {
     // Manejo de errores
@@ -120,8 +152,24 @@ function send_email(recipients, subject, body) {
     console.log(result);
   })
   .catch(error => {
-    console.error('At least one recipient required.', error)
+    console.error('At least one recipient required.', error);
   });
 }
 
-}); // Fin de todo
+function put_email(email_id, archived, read) {
+  fetch(`/emails/${email_id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      archived: archived,
+      read: read
+    })
+  })
+  .then(() => {
+    load_mailbox('inbox');
+  })
+  .catch(error => {
+    console.error("Error updating email", error);
+  });
+}
+
+}); // ) Fin de todo
