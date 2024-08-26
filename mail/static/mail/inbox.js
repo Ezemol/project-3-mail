@@ -24,9 +24,9 @@ function compose_email() {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 
-  // TODO logica de envío
   const form = document.querySelector('#compose-form'); // variable de form
 
+  // Mandar email, toma datos de post.
   form.addEventListener('submit', function(event) {
     event.preventDefault(); // Prevenir que la página se recargue
 
@@ -85,10 +85,12 @@ function get_emails(mailbox) {
 
       // Agregar div con email
       document.querySelector('#emails-view').appendChild(newDiv);
+
+      // Correr función para seleccionar un email con id específico.
+    document.querySelector(`#email-button-${email.id}`).addEventListener('click', () => get_email(`${email.id}`));
     });
 
-    // Correr función para seleccionar un email con id específico.
-    document.querySelector(`#email-button-${email.id}`).addEventListener('click', () => get_email(`${email.id}`));
+    
 
  
 
@@ -117,6 +119,7 @@ function get_email(email_id) {
     <button id="button-archived">Archived</button>
     <button id="button-read">Read</button>
     ` 
+    // Cambiar email específico a archivado/desarchivado y leido/no leido
     document.querySelector('#button-archived').addEventListener('click', () => {
       if (email.archived === true && email.read === true) {
         put_email(email.id, false, false)
