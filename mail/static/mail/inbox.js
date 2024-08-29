@@ -9,30 +9,54 @@ document.addEventListener('DOMContentLoaded', function() {
   // By default, load the inbox
   load_mailbox('inbox');
 
-  function compose_email() {
+  function compose_email(reply_recipients, reply_subject, reply_body, reply) {
     // Show compose view and hide other views
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector('#emailView').style.display = 'none';
     document.querySelector('#compose-view').style.display = 'block';
 
-    // Clear out composition fields 
-    document.querySelector('#compose-recipients').value = '';
-    document.querySelector('#compose-subject').value = '';
-    document.querySelector('#compose-body').value = '';
-
     const form = document.querySelector('#compose-form'); // variable de form
 
-    // Mandar email, toma datos de post.
-    form.addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevenir que la página se recargue
+    // If es el primer email enviado
+    if (reply !== true) {
+      // Clear out composition fields 
+      document.querySelector('#compose-recipients').value = '';
+      document.querySelector('#compose-subject').value = '';
+      document.querySelector('#compose-body').value = '';
 
-      // Declarar variables del form
-      const recipients = document.querySelector('#compose-recipients').value;
-      const subject = document.querySelector('#compose-subject').value;
-      const body = document.querySelector('#compose-body').value;
+      // Mandar email, toma datos de post.
+      form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevenir que la página se recargue
 
-      send_email(recipients, subject, body);
-    });
+        // Declarar variables del form
+        const recipients = document.querySelector('#compose-recipients').value;
+        const subject = document.querySelector('#compose-subject').value;
+        const body = document.querySelector('#compose-body').value;
+
+        post_email(recipients, subject, body);
+      });
+
+    } else {
+      // Declaro variables de los valores preestablecidos de reply
+      const recipients = reply_recipients;
+      const subject = reply_subject;
+      const body = reply_body;
+
+      // Prellenar el form
+      document.querySelector('#compose-recipients').value = `${recipients}`;
+      document.querySelector('#compose-subject').value = `${subject}`;
+      document.querySelector('#compose-body').value = `${body}\n`;
+
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Agregar body nuevo al existente
+        const form_body = document.querySelector('#compose-body').value;
+        const update_body = `${body}\n\n${form_body}`;
+
+        post_email(recipients, subject, update_body);
+      })
+    };
   }
 
   function load_mailbox(mailbox) {
@@ -109,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const emailView = document.querySelector('#emailView');
         
         // Agregar a la clase de mensajes leídos
-        emailView.className = 'readed'; 
+        emailView.className = 'readed';        
 
         emailView.innerHTML = `
           <p><strong>From:</strong> ${email.sender}</p> 
@@ -121,18 +145,28 @@ document.addEventListener('DOMContentLoaded', function() {
           <hr>
         `
 
+        // If user no mando el mensaje puede archivarlo
         if (mailbox !== 'sent') {
-          // Agregar boton
+          // Agregar boton de archivado
           emailView.innerHTML += `<button id="button-archived">${email.archived ? "Unarchive" : "Archive"}</button>`;
+
           // cambiar archived/unarchived
           document.querySelector('#button-archived').addEventListener('click', () => {
             put_email(email.id, !email.archived, true, true);
-          });
-        }        
+          }) 
+        }
+          // Si ya hubo reply, no se puede de nuevo
+          let reply_count = 0;
+          if (reply_count < 1) {
+            emailView.innerHTML += `<button id="button-reply">Reply</button>`;
 
-        // Si no hay cambios no pasa nada.
-        put_email(email.id, email.archived, true, false);
-    
+            document.querySelector('#button-reply').addEventListener('click', () => {
+              reply_count += 1;
+              compose_email(email.sender, `Re: ${email.subject}`, `On ${email.timestamp}, ${email.sender} wrote: ${email.body}`, true);
+            })
+          };          
+                
+
         // Mostrar en pantalla el email elegido
         document.querySelector('#emailView').style.display = 'block';
 
@@ -143,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 
-  function send_email(recipients, subject, body) {
+  function post_email(recipients, subject, body) {
     fetch('/emails', {
       method: 'POST',
       body: JSON.stringify({
