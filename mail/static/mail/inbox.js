@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // By default, load the inbox
   load_mailbox('inbox');
 
-  function compose_email(reply_recipients, reply_subject, reply_body, reply) {
+  function compose_email(reply_recipients, reply_subject, reply_body, reply, reply_timestamp, reply_sender) {
     // Show compose view and hide other views
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector('#emailView').style.display = 'none';
@@ -35,26 +35,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
         post_email(recipients, subject, body);
       });
-
     } else {
       // Declaro variables de los valores preestablecidos de reply
+      const sender = reply_sender;
       const recipients = reply_recipients;
       const subject = reply_subject;
       const body = reply_body;
+      const timestamp = reply_timestamp;
 
       // Prellenar el form
       document.querySelector('#compose-recipients').value = `${recipients}`;
-      document.querySelector('#compose-subject').value = `${subject}`;
-      document.querySelector('#compose-body').value = `${body}\n`;
+      document.querySelector('#compose-body').placeholder = `${body}`;
+      if (subject.startsWith("Re:")) {
+        document.querySelector('#compose-subject').value = `${subject}`;
+      } else {
+        document.querySelector('#compose-subject').value = `Re: ${subject}`;
+      }
 
       form.addEventListener('submit', function(event) {
         event.preventDefault();
 
         // Agregar body nuevo al existente
         const form_body = document.querySelector('#compose-body').value;
-        const update_body = `${body}\n\n${form_body}`;
 
-        post_email(recipients, subject, update_body);
+        if (subject.startsWith("Re:")) {
+          post_email(recipients, `${subject}`, `On ${timestamp}, ${sender} wrote: ${form_body}`);
+        } else {
+          post_email(recipients, `Re: ${subject}`, `On ${timestamp}, ${sender} wrote: ${form_body}`);
+        }
       })
     };
   }
@@ -154,18 +162,22 @@ document.addEventListener('DOMContentLoaded', function() {
           document.querySelector('#button-archived').addEventListener('click', () => {
             put_email(email.id, !email.archived, true, true);
           }) 
-        }
-          // Si ya hubo reply, no se puede de nuevo
-          let reply_count = 0;
-          if (reply_count < 1) {
-            emailView.innerHTML += `<button id="button-reply">Reply</button>`;
+        
+          // Agregar boton de reply
+          emailView.innerHTML += `<button id="button-reply">Reply</button>`;
 
-            document.querySelector('#button-reply').addEventListener('click', () => {
-              reply_count += 1;
-              compose_email(email.sender, `Re: ${email.subject}`, `On ${email.timestamp}, ${email.sender} wrote: ${email.body}`, true);
-            })
-          };          
-                
+          // Click button, compose-email
+          document.querySelector('#button-reply').addEventListener('click', () => {
+            if (email.user === email.sender) {
+              compose_email(email.recipients, `${email.subject}`, `On ${email.timestamp}, ${email.recipients} wrote: ${email.body}`, true, email.timestamp, email.sender);
+            } else {
+              compose_email(email.sender, `${email.subject}`, `On ${email.timestamp}, ${email.sender} wrote: ${email.body}`, true, email.timestamp, email.recipients);
+            }        
+          })
+        }
+
+        // Marcar como leído
+        put_email(email.id, email.archived, true, false);
 
         // Mostrar en pantalla el email elegido
         document.querySelector('#emailView').style.display = 'block';
