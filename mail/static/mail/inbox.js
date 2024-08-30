@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#emailView').style.display = 'none';
 
     // Show the mailbox name
-    document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+    document.querySelector('#emails-view').innerHTML = `<h3 class="mailbox-title">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
     // Correr función para mostrar emails de esta página
     get_emails(mailbox);
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
           document.querySelector('#button-archived').addEventListener('click', () => {
             put_email(email.id, !email.archived, true, true);
           }) 
-          
+
           // Click button, compose-email
           document.querySelector('#button-reply').addEventListener('click', () => {
             if (email.user === email.sender) {

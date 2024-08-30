@@ -1,6 +1,73 @@
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
 textarea {
     min-height: 400px;
 }
+
+body {
+    height: 100vh;
+    display: flex;
+    background: #fff;
+}
+
+.mailbox-title {
+    font-family: 'roboto', sans-serif;
+    font-size: 1.5rem;               /* Tamaño de fuente moderado */
+    font-weight: bold;               /* Resaltar el título */
+    color: #E0E0E0;                     /* Color de texto blanco para contraste con el fondo oscuro */
+    text-align: left;                /* Alinear el título a la izquierda */
+    margin: 0;                          /* Eliminar márgenes para que el fondo ocupe toda la pantalla */
+    margin-bottom: 20px;  
+    border-radius: 5px;                 
+    padding: 15px 20px;              /* Espaciado interno para mejorar la legibilidad */
+    background-color: #333;          /* Fondo oscuro */
+    width: 100%;                     /* Ocupar todo el ancho de la pantalla */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Sombra sutil para darle profundidad */
+}
+
+.top-mailbox-title {
+    margin-top: 20px;
+    text-align: center;
+    color: #fff;
+}
+#button-container {
+    display: flex;                    /* Usar Flexbox para distribución */
+    justify-content: space-around;    /* Distribuir botones uniformemente */
+    padding: 10px;                   /* Espacio alrededor del contenedor */
+}
+
+#button-container .btn {
+    min-width: 100px; /* Ancho mínimo para cada botón */
+}
+
+.btn {
+    color: #333; 
+    background-color: #E0E0E0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    border: 2px solid #333;      /* Añadir borde con color específico */
+    border-radius: 5px;
+    padding: 5px 10px;              /* Espaciado interno para mejorar el tamaño */
+    flex: 1;                         /* Hacer que los botones crezcan igualmente */
+    margin: 0 5px;                  /* Margen entre los botones */
+}
+
+.btn:hover{
+    color: #E0E0E0; 
+    background-color: #007BFF;
+    font-family: 'Roboto', sans-serif;
+}
+
+#btn-logout{
+    margin-left: auto;
+}
+
+
+
 
 .readed {
     background-color: grey;

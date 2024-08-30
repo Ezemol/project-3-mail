@@ -1,25 +1,31 @@
 {% extends "mail/layout.html" %}
 {% load static %}
 
-
 {% block body %}
-    <h2>{{ request.user.email }}</h2>
+    <!-- Muestra el correo electrónico del usuario -->
+    <h2 class="top-mailbox-title mailbox-title">{{ request.user.email }}</h2>
 
-    <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
-    <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
-    <button class="btn btn-sm btn-outline-primary" id="sent">Sent</button>
-    <button class="btn btn-sm btn-outline-primary" id="archived">Archived</button>
-    <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
+    <!-- Botones para navegar entre bandejas -->
+    <div class="button-container">
+        <button class="btn btn-sm" id="inbox">Inbox</button>
+        <button class="btn btn-sm" id="compose">Compose</button>
+        <button class="btn btn-sm" id="sent">Sent</button>
+        <button class="btn btn-sm" id="archived">Archived</button>
+        <a class="btn btn-sm" id="btn-logout" href="{% url 'logout' %}">Log Out</a>
+    </div>
     <hr>
 
-    <div id="emails-view">
+    <!-- Contenedor para mostrar los correos -->
+    <div id="emails-view" class="email-container">
     </div>
 
-    <div id="emailView">
+    <!-- Contenedor para ver un correo específico -->
+    <div id="emailView" class="email-container">
     </div>
 
+    <!-- Vista para redactar un nuevo correo -->
     <div id="compose-view">
-        <h3>New Email</h3>
+        <h3 class="mailbox-title">New Email</h3>
         <form id="compose-form">
             <div class="form-group">
                 From: <input disabled class="form-control" value="{{ request.user.email }}">
@@ -39,5 +45,6 @@
 {% endblock %}
 
 {% block script %}
+    <!-- Importar el script para la funcionalidad de la bandeja de entrada -->
     <script src="{% static 'mail/inbox.js' %}"></script>
 {% endblock %}
