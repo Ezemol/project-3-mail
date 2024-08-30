@@ -158,14 +158,15 @@ document.addEventListener('DOMContentLoaded', function() {
           // Agregar boton de archivado
           emailView.innerHTML += `<button id="button-archived">${email.archived ? "Unarchive" : "Archive"}</button>`;
 
+          // Agregar boton de reply
+          emailView.innerHTML += `<button id="button-reply">Reply</button>`;
+
+
           // cambiar archived/unarchived
           document.querySelector('#button-archived').addEventListener('click', () => {
             put_email(email.id, !email.archived, true, true);
           }) 
-        
-          // Agregar boton de reply
-          emailView.innerHTML += `<button id="button-reply">Reply</button>`;
-
+          
           // Click button, compose-email
           document.querySelector('#button-reply').addEventListener('click', () => {
             if (email.user === email.sender) {
