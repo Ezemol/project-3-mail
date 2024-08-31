@@ -102,22 +102,20 @@ document.addEventListener('DOMContentLoaded', function() {
           <p><strong>From:</strong> ${email.sender}</p>   
           <p><strong>Subject:</strong> ${email.subject}</p> 
           <p><strong>Date:</strong> ${email.timestamp}</p>
-          <p><button id='email-button-${email.id}'>Go to Email</button></p>
-          <hr>
           `;
 
+          // Clase de cada email
+          newDiv.className = 'email-item';
           // Agregar background color a gris para los emails leídos
           if (email.read === true) {
-            newDiv.className = ('readed'); 
-          } else {
-            newDiv.className = 'email-item';
+            newDiv.classList.add('readed'); 
           }
-
+            
           // Agregar div con email
           document.querySelector('#emails-view').appendChild(newDiv);
 
           // Correr función para seleccionar un email con id específico.
-          document.querySelector(`#email-button-${email.id}`).addEventListener('click', () => get_email(email.id, mailbox));
+          document.querySelector(`#email-item-${email.id}`).addEventListener('click', () => get_email(email.id, mailbox));
         });
       })
       .catch(error => {
@@ -141,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const emailView = document.querySelector('#emailView');
         
         // Agregar a la clase de mensajes leídos
-        emailView.className = 'readed';        
+        emailView.className = 'email-readed readed';        
 
         emailView.innerHTML = `
           <p><strong>From:</strong> ${email.sender}</p> 
@@ -156,10 +154,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // If user no mando el mensaje puede archivarlo
         if (mailbox !== 'sent') {
           // Agregar boton de archivado
-          emailView.innerHTML += `<button id="button-archived">${email.archived ? "Unarchive" : "Archive"}</button>`;
+          emailView.innerHTML += `<button id="button-archived" class="btn-secondary btn">${email.archived ? "Unarchive" : "Archive"}</button>`;
 
           // Agregar boton de reply
-          emailView.innerHTML += `<button id="button-reply">Reply</button>`;
+          emailView.innerHTML += `<button id="button-reply" class="btn-secondary btn">Reply</button>`;
 
 
           // cambiar archived/unarchived

@@ -34,14 +34,10 @@ body {
     text-align: center;
     color: #fff;
 }
-#button-container {
-    display: flex;                    /* Usar Flexbox para distribución */
-    justify-content: space-around;    /* Distribuir botones uniformemente */
-    padding: 10px;                   /* Espacio alrededor del contenedor */
-}
 
-#button-container .btn {
-    min-width: 100px; /* Ancho mínimo para cada botón */
+.button-container {
+    display: flex;                    /* Usar Flexbox para distribución */
+    justify-content: space-around;    /* Distribuir botones uniformemente */                  /* Espacio alrededor del contenedor */
 }
 
 .btn {
@@ -66,9 +62,42 @@ body {
     margin-left: auto;
 }
 
+.email-item {
+    display: block;
+    width: 100%;               /* Ocupa el 95% del ancho de la pantalla */
+    margin: 10px auto;        /* Centra el email horizontalmente y agrega margen superior e inferior */
+    padding: 10px;            /* Espaciado interno */
+    border: 1px solid #ccc;   /* Borde fino alrededor del email */
+    border-radius: 5px;       /* Bordes redondeados */
+    background-color: #f9f9f9; /* Fondo claro */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil para darle profundidad */
+    min-height: 70px;         /* Altura mínima para cada email */
+    border-left: 5px solid #007BFF;  /* Barra de color a la izquierda para resaltar */
+    overflow: hidden;          /* Oculta contenido que se desborda */
+    text-overflow: ellipsis;   /* Agrega puntos suspensivos si el texto es demasiado largo */
+    white-space: normal;       /* Permite que el texto se ajuste a varias líneas */
+    line-height: 1.2;          /* Ajuste de la altura de línea para mejorar la legibilidad */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Suavizar el efecto */
+    cursor: pointer; /* Cambia el cursor a "pointer" para parecer un botón */
+}
 
-
+.email-item:hover {
+    background-color: #e0e0e0; /* Cambia el color de fondo al pasar el mouse */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Aumenta la sombra para darle más profundidad */
+    transform: scale(1.02); /* Hace que el elemento se agrande ligeramente */
+}
 
 .readed {
-    background-color: grey;
+    background-color: #8b8b8b;  /* Fondo más oscuro para emails leídos */
+    border-left: 5px solid #333;  /* Cambia la barra a un color más oscuro para emails leídos */
+}
+
+.btn-secondary{
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.email-readed {
+    margin: 10px;
+    margin-bottom: 20px; /* Agrega más espacio en la parte inferior */
 }
