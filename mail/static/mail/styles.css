@@ -37,7 +37,7 @@ body {
 
 .button-container {
     display: flex;                    /* Usar Flexbox para distribución */
-    justify-content: space-around;    /* Distribuir botones uniformemente */                  /* Espacio alrededor del contenedor */
+    justify-content: space-around;    /* Distribuir botones uniformemente */ 
 }
 
 .btn {
@@ -56,10 +56,6 @@ body {
     color: #E0E0E0; 
     background-color: #007BFF;
     font-family: 'Roboto', sans-serif;
-}
-
-#btn-logout{
-    margin-left: auto;
 }
 
 .email-item {
@@ -100,4 +96,39 @@ body {
 .email-readed {
     margin: 10px;
     margin-bottom: 20px; /* Agrega más espacio en la parte inferior */
+}
+
+#emailView {
+    height: 75%;
+    position: relative; /* Contenedor relativo para controlar la posición interna */
+    overflow: auto; /* Evita el desbordamiento */
+    padding: 10px; /* Opcional: agrega espacio interno */
+}
+
+.btn-secondary {
+    padding: 5px;
+    margin-bottom: 10px;
+    position: relative; /* Posiciona el botón dentro de #emailView */
+    bottom: 5px; /* Alinea el botón a 10px del fondo de #emailView */
+    left: 10px; /* Alinea el botón a 10px del borde izquierdo */
+    right: 10px; /* Alinea el botón a 10px del borde derecho */
+}
+
+.form-group{
+    font-family: 'roboto', sans-serif;
+    font-size: 1.0rem;               /* Tamaño de fuente moderado */
+    font-weight: bold;               /* Resaltar el título */
+    color: #E0E0E0;                     /* Color de texto blanco para contraste con el fondo oscuro */
+    text-align: left;                /* Alinear el título a la izquierda */
+    margin-top: 10px;                          /* Eliminar márgenes para que el fondo ocupe toda la pantalla */
+    margin-bottom: 20px;  
+    border-radius: 5px;                 
+    padding: 15px 20px;              /* Espaciado interno para mejorar la legibilidad */
+    background-color: #444;          /* Fondo oscuro */
+    width: 100%;                     /* Ocupar todo el ancho de la pantalla */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Sombra sutil para darle profundidad */
+}
+
+#submit-btn{
+    margin-top: 10px;
 }

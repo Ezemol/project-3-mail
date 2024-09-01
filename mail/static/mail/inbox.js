@@ -142,10 +142,10 @@ document.addEventListener('DOMContentLoaded', function() {
         emailView.className = 'email-readed readed';        
 
         emailView.innerHTML = `
+          <p><strong>Date:</strong> ${email.timestamp}</p>
           <p><strong>From:</strong> ${email.sender}</p> 
           <p><strong>To:</strong> ${email.recipients.join(', ')}</p>   
           <p><strong>Subject:</strong> ${email.subject}</p> 
-          <p><strong>Date:</strong> ${email.timestamp}</p>
           <hr>
           <p><strong>Body:</strong> ${email.body}</p> 
           <hr>
